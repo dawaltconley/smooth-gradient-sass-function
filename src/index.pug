@@ -218,11 +218,11 @@ html(lang="en")
             background-image: linear-gradient(to right, gradients.scrim());
             background-image: linear-gradient(45deg, gradients.scrim());
 
-            /* #ff0000 color start (default is #000000) */
+            /* #ff0000 color start (default is #000000, position 0) */
             background-image: linear-gradient(to bottom, gradients.scrim(#ff0000));
 
-            /* 0.5 opacity start (default is 1) */
-            background-image: linear-gradient(to bottom, gradients.scrim(#000000, 0.5));
+            /* specify final color stop (default is transparent, position 100%) */
+            background-image: linear-gradient(to bottom, gradients.scrim(#000000, transparent 50%));
 
       .Space.-sm
 

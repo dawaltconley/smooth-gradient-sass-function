@@ -15,7 +15,7 @@ Gradients are scrim, easeOutSine, and clothoid curve.
 
 ```scss
 // `scrim` smoothing
-@function scrim($color: #000000, $opacity: 1, $start: 0, $end: 100%) {
+@function scrim($from: [#000000, 0], $to: [transparent, 100%]) {
   // validate arguments
   // ...
 
@@ -34,14 +34,14 @@ Gradients are scrim, easeOutSine, and clothoid curve.
     0.002: 0.982,
     0: 1,
   );
-  @return _make-gradient-list($scrim, $color, $opacity, $start, $end);
+  @return _make-gradient-list($scrim, $from, $to, $start, $end);
 }
 
-@function _make-gradient-list($map, $color, $opacity, $start, $end) {
+@function _make-gradient-list($map, $from, $to, $start, $end) {
   $color-stops: ();
   @each $key, $mod in $map {
     $position: $mod * ($end - $start) + $start;
-    $new-stop: color.change($color, $alpha: $key * $opacity);
+    $new-stop: color.mix($from, $to, $key * 100%);
     $color-stops: list.append($color-stops, $new-stop $position, "comma");
   }
   @return $color-stops;
@@ -50,7 +50,7 @@ Gradients are scrim, easeOutSine, and clothoid curve.
 
 ```scss
 // `easeOutSine` smoothing
-@function easeOutSine($color: #000000, $opacity: 1, $start: 0, $end: 100%) {
+@function easeOutSine($from: [#000000, 0], $to: [transparent, 100%]) {
   // validate arguments
   // ...
 
@@ -72,13 +72,13 @@ Gradients are scrim, easeOutSine, and clothoid curve.
     0.011: 0.906,
     0: 1,
   );
-  @return _make-gradient-list($easeOutSine, $color, $opacity, $start, $end);
+  @return _make-gradient-list($scrim, $from, $to, $start, $end);
 }
 ```
 
 ```scss
 // `clothoid` smoothing
-@function clothoid($color: #000000, $opacity: 1, $start: 0, $end: 100%) {
+@function clothoid($from: [#000000, 0], $to: [transparent, 100%]) {
   // validate arguments
   // ...
 
@@ -91,7 +91,7 @@ Gradients are scrim, easeOutSine, and clothoid curve.
     0.019: 0.88,
     0: 1,
   );
-  @return _make-gradient-list($clothoid, $color, $opacity, $start, $end);
+  @return _make-gradient-list($scrim, $from, $to, $start, $end);
 }
 ```
 
@@ -133,7 +133,7 @@ npm i smooth-gradient-sass-function
 
 ```scss
 .elem {
-  // default color is `#000`, start opacity is `1`
+  // default blend is `#000` to `transparent`
   background-image: linear-gradient(to bottom, gradients.scrim());
 }
 ```
@@ -156,34 +156,41 @@ npm i smooth-gradient-sass-function
 
 ```scss
 .box {
-  // 1st arg is start color code(default: #000)
-  background-image: linear-gradient(to bottom, gradients.scrim(#ff0000));
-}
-```
-
-```scss
-.box {
-  // 2nd arg is start opacity(default: 1)
-  background-image: linear-gradient(to bottom, gradients.scrim(#ffff00, 0.5));
-}
-```
-
-```scss
-.box {
-  // 3rd arg is start position
+  // 1st arg is a list, containing start color code and position (default: #000000 0)
   background-image: linear-gradient(
     to bottom,
-    gradients.scrim(#ffff00, 0.5, $start: 50%)
+    gradients.scrim($from: #ff0000 20%)
   );
 }
 ```
 
 ```scss
 .box {
-  // 4th arg is end position
+  // 2nd arg is a list, containing end color code and position (default: transparent 100%)
   background-image: linear-gradient(
     to bottom,
-    gradients.scrim(#ffff00, 0.5, $start: 0, $end: 16em)
+    gradients.scrim($from: #ffff00 20%, $to: rgba(#ffff00, 0.2) 60%)
+  );
+}
+```
+
+```scss
+.box {
+  // args are determined by type, and can be mixed
+  // this is equivalent to $from: #ffff00 0, $to: rgba(255, 255, 0, 0) 50%
+  background-image: linear-gradient(
+    to bottom,
+    gradients.scrim($from: #ffff00, $to: 50%)
+  );
+}
+```
+
+```scss
+.box {
+  // positions can be absolute values, as long as they are compatible
+  background-image: linear-gradient(
+    to bottom,
+    gradients.scrim($from: 3em, $to: 16em)
   );
 }
 ```
