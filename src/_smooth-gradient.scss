@@ -7,7 +7,7 @@
   $color-stops: ();
   @each $key, $mod in $map {
     $position: $mod * ($end - $start) + $start;
-    $new-stop: color.change($color, $alpha: $key * $opacity);
+    $new-stop: color.scale($color, $alpha: ($key * $opacity - 1) * 100%);
     $color-stops: list.append($color-stops, $new-stop $position, "comma");
   }
   @return $color-stops;
