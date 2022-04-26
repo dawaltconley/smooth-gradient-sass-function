@@ -1,7 +1,7 @@
-@use 'sass:color';
-@use 'sass:list';
-@use 'sass:math';
-@use 'sass:meta';
+@use "sass:color";
+@use "sass:list";
+@use "sass:math";
+@use "sass:meta";
 
 @function _make-gradient-list($map, $color, $opacity, $start, $end) {
   $color-stops: ();
@@ -39,7 +39,7 @@
     0.021: 0.91,
     0.008: 0.952,
     0.002: 0.982,
-    0: 1
+    0: 1,
   );
   @return _make-gradient-list($scrim, $color, $opacity, $start, $end);
 }
@@ -73,7 +73,7 @@
     0.089: 0.729,
     0.042: 0.814,
     0.011: 0.906,
-    0: 1
+    0: 1,
   );
   @return _make-gradient-list($easeOutSine, $color, $opacity, $start, $end);
 }
@@ -93,12 +93,12 @@
 
   $clothoid: (
     1: 0,
-    0.3: 0.50,
+    0.3: 0.5,
     0.15: 0.65,
     0.075: 0.755,
     0.037: 0.8285,
     0.019: 0.88,
-    0: 1
+    0: 1,
   );
   @return _make-gradient-list($clothoid, $color, $opacity, $start, $end);
 }
