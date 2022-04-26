@@ -67,7 +67,7 @@
       &.-any4 {
         background-image: linear-gradient(
           to bottom,
-          gradients.scrim(#000000, 0.5)
+          gradients.scrim(rgba(#000000, 0.5))
         );
       }
     }
