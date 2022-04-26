@@ -1,5 +1,9 @@
 {
-  "extends": "stylelint-config-recommended",
+  "extends": [
+    "stylelint-config-recommended",
+    "stylelint-config-recommended-scss"
+  ],
+  "plugins": ["stylelint-scss"],
   "rules": {
     "function-calc-no-unspaced-operator": null
   }
