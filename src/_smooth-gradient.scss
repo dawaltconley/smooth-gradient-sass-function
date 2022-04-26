@@ -3,6 +3,15 @@
 @use "sass:math";
 @use "sass:meta";
 
+@function _get($list, $type) {
+  @each $item in $list {
+    @if meta.type-of($item) == $type {
+      @return $item;
+    }
+  }
+  @return null;
+}
+
 @function _make-gradient-list($map, $from, $to, $start, $end) {
   $color-stops: ();
   @each $key, $mod in $map {
@@ -14,14 +23,13 @@
 }
 
 // `scrim` smoothing
-@function scrim($from: #000000, $to: rgba($from, 0), $start: 0, $end: 100%) {
+@function scrim($from: null, $to: null) {
+  $start: _get($from, number) or 0;
+  $end: _get($to, number) or 100%;
+  $from: _get($from, color) or #000000;
+  $to: _get($to, color) or rgba($from, 0);
+
   // validate arguments
-  @if meta.type-of($from) != color {
-    @error '$from must be a color, was #{$from}';
-  }
-  @if meta.type-of($to) != color {
-    @error '$to must be a color, was #{$to}';
-  }
   @if not math.compatible($start, $end) {
     @error '$start and $end values must be compatible: were #{$start} and #{$end}';
   }
@@ -45,19 +53,13 @@
 }
 
 // `easeOutSine` smoothing
-@function easeOutSine(
-  $from: #000000,
-  $to: rgba($from, 0),
-  $start: 0,
-  $end: 100%
-) {
+@function easeOutSine($from: null, $to: null) {
+  $start: _get($from, number) or 0;
+  $end: _get($to, number) or 100%;
+  $from: _get($from, color) or #000000;
+  $to: _get($to, color) or rgba($from, 0);
+
   // validate arguments
-  @if meta.type-of($from) != color {
-    @error '$from must be a color, was #{$from}';
-  }
-  @if meta.type-of($to) != color {
-    @error '$to must be a color, was #{$to}';
-  }
   @if not math.compatible($start, $end) {
     @error '$start and $end values must be compatible: were #{$start} and #{$end}';
   }
@@ -84,14 +86,13 @@
 }
 
 // `clothoid` smoothing
-@function clothoid($from: #000000, $to: rgba($from, 0), $start: 0, $end: 100%) {
+@function clothoid($from: null, $to: null) {
+  $start: _get($from, number) or 0;
+  $end: _get($to, number) or 100%;
+  $from: _get($from, color) or #000000;
+  $to: _get($to, color) or rgba($from, 0);
+
   // validate arguments
-  @if meta.type-of($from) != color {
-    @error '$from must be a color, was #{$from}';
-  }
-  @if meta.type-of($to) != color {
-    @error '$to must be a color, was #{$to}';
-  }
   @if not math.compatible($start, $end) {
     @error '$start and $end values must be compatible: were #{$start} and #{$end}';
   }
