@@ -3,21 +3,24 @@
 @use "sass:math";
 @use "sass:meta";
 
-@function _make-gradient-list($map, $color, $start, $end) {
+@function _make-gradient-list($map, $from, $to, $start, $end) {
   $color-stops: ();
   @each $key, $mod in $map {
     $position: $mod * ($end - $start) + $start;
-    $new-stop: color.scale($color, $alpha: ($key - 1) * 100%);
+    $new-stop: color.mix($from, $to, $key * 100%);
     $color-stops: list.append($color-stops, $new-stop $position, "comma");
   }
   @return $color-stops;
 }
 
 // `scrim` smoothing
-@function scrim($color: #000000, $start: 0, $end: 100%) {
+@function scrim($from: #000000, $to: rgba($from, 0), $start: 0, $end: 100%) {
   // validate arguments
-  @if meta.type-of($color) != color {
-    @error '$color must be a color, was #{$color}';
+  @if meta.type-of($from) != color {
+    @error '$from must be a color, was #{$from}';
+  }
+  @if meta.type-of($to) != color {
+    @error '$to must be a color, was #{$to}';
   }
   @if not math.compatible($start, $end) {
     @error '$start and $end values must be compatible: were #{$start} and #{$end}';
@@ -38,14 +41,22 @@
     0.002: 0.982,
     0: 1,
   );
-  @return _make-gradient-list($scrim, $color, $start, $end);
+  @return _make-gradient-list($scrim, $from, $to, $start, $end);
 }
 
 // `easeOutSine` smoothing
-@function easeOutSine($color: #000000, $start: 0, $end: 100%) {
+@function easeOutSine(
+  $from: #000000,
+  $to: rgba($from, 0),
+  $start: 0,
+  $end: 100%
+) {
   // validate arguments
-  @if meta.type-of($color) != color {
-    @error '$color must be a color, was #{$color}';
+  @if meta.type-of($from) != color {
+    @error '$from must be a color, was #{$from}';
+  }
+  @if meta.type-of($to) != color {
+    @error '$to must be a color, was #{$to}';
   }
   @if not math.compatible($start, $end) {
     @error '$start and $end values must be compatible: were #{$start} and #{$end}';
@@ -69,14 +80,17 @@
     0.011: 0.906,
     0: 1,
   );
-  @return _make-gradient-list($easeOutSine, $color, $start, $end);
+  @return _make-gradient-list($easeOutSine, $from, $to, $start, $end);
 }
 
 // `clothoid` smoothing
-@function clothoid($color: #000000, $start: 0, $end: 100%) {
+@function clothoid($from: #000000, $to: rgba($from, 0), $start: 0, $end: 100%) {
   // validate arguments
-  @if meta.type-of($color) != color {
-    @error '$color must be a color, was #{$color}';
+  @if meta.type-of($from) != color {
+    @error '$from must be a color, was #{$from}';
+  }
+  @if meta.type-of($to) != color {
+    @error '$to must be a color, was #{$to}';
   }
   @if not math.compatible($start, $end) {
     @error '$start and $end values must be compatible: were #{$start} and #{$end}';
@@ -91,5 +105,5 @@
     0.019: 0.88,
     0: 1,
   );
-  @return _make-gradient-list($clothoid, $color, $start, $end);
+  @return _make-gradient-list($clothoid, $from, $to, $start, $end);
 }
