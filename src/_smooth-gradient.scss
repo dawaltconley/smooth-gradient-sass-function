@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "sass:list";
+@use "sass:map";
 @use "sass:math";
 @use "sass:meta";
 
@@ -10,6 +11,44 @@
     }
   }
   @return null;
+}
+
+// parse args with support for legacy arguments
+@function _parse-args($args...) {
+  $kwargs: meta.keywords($args);
+  @each $key, $value in list.zip(("from", "to", "start", "end"), $args) {
+    $kwargs: map.set($kwargs, $key, $value);
+  }
+  $from: map.get($kwargs, from) or map.get($kwargs, color);
+  $to: map.get($kwargs, to);
+  $start: map.get($kwargs, start) or _get($from, number) or 0;
+  $end: map.get($kwargs, end) or _get($to, number) or 100%;
+  $opacity: map.get($kwargs, opacity);
+  @if meta.type-of($to) ==
+    number and
+    math.is-unitless($to) and
+    0 <=
+    $to and
+    $to <=
+    1
+  {
+    @if $to == $end {
+      $end: 100%;
+    }
+    $opacity: $to;
+  }
+  $from: _get($from, color) or #000000;
+  @if $opacity {
+    $from: color.change($from, $alpha: $opacity);
+  }
+  $to: _get($to, color) or color.change($from, $alpha: 0);
+
+  @return (
+    "startColor": $from,
+    "endColor": $to,
+    "startPos": $start,
+    "endPos": $end
+  );
 }
 
 @function _make-gradient-list($map, $from, $to, $start, $end) {
@@ -23,11 +62,23 @@
 }
 
 // `scrim` smoothing
-@function scrim($from: null, $to: null) {
-  $start: _get($from, number) or 0;
-  $end: _get($to, number) or 100%;
-  $from: _get($from, color) or #000000;
-  $to: _get($to, color) or rgba($from, 0);
+// @function scrim($from: null, $to: null, $color: null, $opacity: null, $start: null, $end: null) {
+//   $start: $start or _get($from, number) or 0;
+//   $end: $end or _get($to, number) or 100%;
+//   $from: $color or _get($from, color) or #000000;
+//   $opacity: $opacity or meta.type-of($to) == number and math.is-unitless($to) and 0 <= $to and $to <= 1 and $to;
+//   @if $opacity {
+//     $from: color.change($from, $alpha: $opacity);
+//   }
+//   $to: _get($to, color) or rgba($from, 0);
+
+// `scrim` smoothing
+@function scrim($args...) {
+  $args: _parse-args($args...);
+  $from: map.get($args, "startColor");
+  $to: map.get($args, "endColor");
+  $start: map.get($args, "startPos");
+  $end: map.get($args, "endPos");
 
   // validate arguments
   @if not math.compatible($start, $end) {
@@ -53,11 +104,12 @@
 }
 
 // `easeOutSine` smoothing
-@function easeOutSine($from: null, $to: null) {
-  $start: _get($from, number) or 0;
-  $end: _get($to, number) or 100%;
-  $from: _get($from, color) or #000000;
-  $to: _get($to, color) or rgba($from, 0);
+@function easeOutSine($args...) {
+  $args: _parse-args($args...);
+  $from: map.get($args, "startColor");
+  $to: map.get($args, "endColor");
+  $start: map.get($args, "startPos");
+  $end: map.get($args, "endPos");
 
   // validate arguments
   @if not math.compatible($start, $end) {
@@ -86,11 +138,12 @@
 }
 
 // `clothoid` smoothing
-@function clothoid($from: null, $to: null) {
-  $start: _get($from, number) or 0;
-  $end: _get($to, number) or 100%;
-  $from: _get($from, color) or #000000;
-  $to: _get($to, color) or rgba($from, 0);
+@function clothoid($args...) {
+  $args: _parse-args($args...);
+  $from: map.get($args, "startColor");
+  $to: map.get($args, "endColor");
+  $start: map.get($args, "startPos");
+  $end: map.get($args, "endPos");
 
   // validate arguments
   @if not math.compatible($start, $end) {
